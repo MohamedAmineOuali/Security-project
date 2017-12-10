@@ -1,8 +1,9 @@
 from OpenSSL import crypto
+from OpenSSL._util import lib as cryptolib
 
-# TYPE_RSA = crypto.TYPE_RSA
+TYPE_RSA = crypto.TYPE_RSA
 # TYPE_DSA = crypto.TYPE_DSA
-
+#apt-get install libssl-dev
 
 def create_keyPair(type, bits):
     pkey = crypto.PKey()
@@ -83,3 +84,14 @@ def load_certi_file(certfile):
 def save_certif_file(filename, certif):
     with open(filename, 'wb') as file:
         file.write(crypto.dump_certificate(crypto.FILETYPE_PEM, certif))
+
+
+def Get_PublicKey_from_KeyPair(pkey):
+    """ Format a public key as a PEM """
+    bio = crypto._new_mem_buf()
+    cryptolib.PEM_write_bio_PUBKEY(bio, pkey._pkey)
+    return crypto._bio_to_string(bio)
+
+
+#kp=create_keyPair(TYPE_RSA,4096)
+

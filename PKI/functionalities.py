@@ -1,15 +1,9 @@
 from Crypto.Util import asn1
 
-from client import Client
+from shared.client import Client
 from shared.openssl import *
-import openssl
+from shared.ldap import *
 import os
-
-
-def signUp(client:Client):
-    return True
-
-
 
 
 class CertificationServer:
@@ -48,3 +42,19 @@ class CertificationServer:
             careq = create_certRequest(self.key, CN='Certificate Authority')
             self.certif = create_certificate(careq, careq, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
             save_certif_file(certificatefile,self.certif)
+
+
+        self.ldap_server = LDAP_server()
+
+
+    def create_client_certificate(self, client_request):
+
+        certif = create_certificate(client_request, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
+        return certif
+
+
+    def signUp(self, client:Client, client_request):
+
+        certif = self.create_client_certificate(client_request)
+        client.certification = crypto.dump_certificate(crypto.FILETYPE_PEM, certif)
+        return self.ldap_server.create(client)
