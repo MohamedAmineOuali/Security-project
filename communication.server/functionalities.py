@@ -96,10 +96,6 @@ class Server:
         print('Got certificate: %s' % cert.get_subject())
         return ok
 
-# # Test authentification
-client = Client(2222, 'cn2', 'sn2', 'uid2', 'pwd2', 'certif2')
-
-print(Server.authentification(client))
 
 server=Server()
 while 1:
