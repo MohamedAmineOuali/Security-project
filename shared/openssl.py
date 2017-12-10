@@ -1,5 +1,6 @@
 from OpenSSL import crypto
 from OpenSSL._util import lib as cryptolib
+from Crypto.PublicKey import RSA
 
 TYPE_RSA = crypto.TYPE_RSA
 # TYPE_DSA = crypto.TYPE_DSA
@@ -86,13 +87,46 @@ def save_certif_file(filename, certif):
         file.write(crypto.dump_certificate(crypto.FILETYPE_PEM, certif))
 
 
-def Get_PublicKey_from_KeyPair(pkey):
+def Get_PublicKey_String_from_KeyPair(pkey):
     """ Format a public key as a PEM """
     bio = crypto._new_mem_buf()
     cryptolib.PEM_write_bio_PUBKEY(bio, pkey._pkey)
     return crypto._bio_to_string(bio)
 
 
+def Get_PublicKey_From_KeyPair(keyPair):
+    publicKeyString = Get_PublicKey_String_from_KeyPair(keyPair)
+    return RSA.importKey(publicKeyString)
 
-#kp=create_keyPair(TYPE_RSA,4096)
 
+
+def Get_PrivateKey_From_KeyPair(keyPair):
+    private_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, keyPair)
+    return RSA.importKey(private_key)
+
+
+
+def encrypt_RSA(public_key, data):
+    return public_key.encrypt(data.encode('utf-8'), '')
+
+
+def decrypt_RSA(private_key, data_encrypted):
+    return private_key.decrypt(data_encrypted).decode('utf-8')
+
+
+## Generate key pair
+# kp = create_keyPair(TYPE_RSA, 4096)
+#
+## Extract Public key from Key Pair
+# pub = Get_PublicKey_From_KeyPair(kp)
+## Extract Private key from Key Pair
+# prv = Get_PrivateKey_From_KeyPair(kp)
+#
+# msg='hello'
+## Encrypt message with the public key
+# enc = encrypt_RSA(pub, msg)
+## Decrypt message with the private key
+# dec = decrypt_RSA(prv, enc)
+#
+# print(enc)
+# print(dec)
