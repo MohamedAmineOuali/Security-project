@@ -1,6 +1,6 @@
 from Crypto.Util import asn1
 
-from shared.client import Client
+from client import Client
 from shared.openssl import *
 from shared.ldap import *
 import os
