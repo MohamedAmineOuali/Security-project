@@ -1,4 +1,5 @@
 from shared.client import Client
+from shared.ldap import *
 
 from OpenSSL import SSL
 import threading
@@ -6,6 +7,7 @@ import sys, os, select, socket
 
 
 class ClientThread(threading.Thread):
+
     def __init__(self, ip, port, socket:SSL.Connection,output,addClient,removeClient):
         threading.Thread.__init__(self)
         self.source = ip+":"+str(port)
@@ -36,6 +38,8 @@ class ClientThread(threading.Thread):
 
 
 class Server:
+
+    ldap_server = LDAP_server()
 
     def __init__(self, port=2025, nb=3,key='keys/server.key',cert='keys/server.cert',authourity='keys/CA.cert'):
         # Initialize context
@@ -75,7 +79,14 @@ class Server:
 
     @staticmethod
     def authentification(client):
-        return True
+        cl = Server.ldap_server.findClient(client.login)
+        if cl == NONE:
+            return False
+        else:
+            if client.password == cl.password:
+                return True
+            return False
+
 
 
     @staticmethod
@@ -84,7 +95,10 @@ class Server:
         print('Got certificate: %s' % cert.get_subject())
         return ok
 
+# # Test authentification
+client = Client(2222, 'cn2', 'sn2', 'uid2', 'pwd2', 'certif2')
 
+print(Server.authentification(client))
 
 server=Server()
 while 1:

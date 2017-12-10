@@ -23,13 +23,16 @@ class LDAP_server:
 
 
     def findClient(self,login):
-        self.connection.search(self.ldap_base, '(uid='+login+')'
-                            , attributes=['uid', 'cn', 'sn', 'userPassword', 'telephoneNumber', 'description'])
-        values=self.connection.entries[0]
-        print(values)
+        try:
+            self.connection.search(self.ldap_base, '(uid='+login+')'
+                                , attributes=['uid', 'cn', 'sn', 'userPassword', 'telephoneNumber', 'description'])
+            values=self.connection.entries[0]
+            # print(values)
 
-        return Client(values['telephoneNumber'], values['cn'], values['sn'], values['uid'],
-                      values['userPassword'].__str__().split('\'')[1], values['description'])
+            return Client(values['telephoneNumber'], values['cn'], values['sn'], values['uid'],
+                          values['userPassword'].__str__().split('\'')[1], values['description'])
+        except:
+            return NONE
 
 
 # # Test scénario , add client then get it from ldap server
