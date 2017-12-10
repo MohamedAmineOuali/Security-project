@@ -32,9 +32,9 @@ class LDAP_server:
                       values['userPassword'].__str__().split('\'')[1], values['description'])
 
 
-# Test scénario , add client then get it from ldap server
-l=LDAP_server()
-client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3')
-created=l.create(client)
-print('Is a new entry created ? %s'%created)
-print(l.findClient('uid2'))
+# # Test scénario , add client then get it from ldap server
+# l=LDAP_server()
+# client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3')
+# created=l.create(client)
+# print('Is a new entry created ? %s'%created)
+# print(l.findClient('uid2'))

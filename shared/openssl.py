@@ -64,13 +64,13 @@ def create_certificate(req, issuerCert, issuerKey, serial, notBefore, notAfter, 
 
 def load_key_file(keyfile, passphrase=''):
     st_key = open(keyfile, 'rt').read()
-    key = crypto.load_privatekey(crypto.FILETYPE_PEM, st_key, passphrase=passphrase)
+    key = crypto.load_privatekey(crypto.FILETYPE_PEM, st_key, passphrase=str.encode(passphrase))
     return key
 
 
 def save_key_file(filename, key, passphrase=''):
-    with open(filename, 'w') as file:
-        file.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, key, passphrase=passphrase))
+    with open(filename, 'wb') as file:
+        file.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, key, passphrase=str.encode(passphrase)))
     return True
 
 
@@ -81,5 +81,5 @@ def load_certi_file(certfile):
 
 
 def save_certif_file(filename, certif):
-    with open(filename, 'w') as file:
+    with open(filename, 'wb') as file:
         file.write(crypto.dump_certificate(crypto.FILETYPE_PEM, certif))
