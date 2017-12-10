@@ -83,7 +83,8 @@ class Server:
         if cl == NONE:
             return False
         else:
-            if client.password == cl.password:
+            if client.password == cl.password :
+                client.__dict__ = cl.__dict__.copy()
                 return True
             return False
 
