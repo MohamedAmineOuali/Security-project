@@ -90,14 +90,14 @@ class CertificationServer:
         return  certif_to_bytes(certif)
 
 
-# generate client certification
-PKI=CertificationServer()
-k=create_keyPair()
-req=create_certRequest(k,CN='Certification client')
-client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', req)
-client=PKI.signUp(client)
-save_key_file("client.key",k,passphrase="admin")
-save_certif_file("client.cert",bytes_to_certif(client.certification))
+# # generate client certification
+# PKI=CertificationServer()
+# k=create_keyPair()
+# req=create_certRequest(k,CN='Certification client')
+# client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', req)
+# client=PKI.signUp(client)
+# save_key_file("client.key",k,passphrase="admin")
+# save_certif_file("client.cert",bytes_to_certif(client.certification))
 
 
 # generate server certification
@@ -109,7 +109,7 @@ save_certif_file("client.cert",bytes_to_certif(client.certification))
 # save_certif_file("server.cert",bytes_to_certif(certif))
 # save_certif_file("server.cert",string_to_certif(certif))
 
-# certification_server = CertificationServer()
-# while 1:
-#     certification_server.listen()
+certification_server = CertificationServer()
+while 1:
+    certification_server.listen()
 
