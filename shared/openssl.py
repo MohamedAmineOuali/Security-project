@@ -3,6 +3,8 @@ from OpenSSL._util import lib as cryptolib
 from Crypto.PublicKey import RSA
 from pycparser.c_ast import BinaryOp
 import base64
+import hashlib
+
 TYPE_RSA = crypto.TYPE_RSA
 # TYPE_DSA = crypto.TYPE_DSA
 #apt-get install libssl-dev
@@ -148,6 +150,8 @@ def encrypt_RSA(public_key, data):
 def decrypt_RSA(private_key, data_encrypted):
     return private_key.decrypt(data_encrypted).decode('utf-8')
 
+def hash_SHA512(data):
+    return hashlib.sha512(data.encode('utf-8')).hexdigest()
 
 ## Generate key pair
 # kp = create_keyPair(TYPE_RSA, 4096)
