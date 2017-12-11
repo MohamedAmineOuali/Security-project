@@ -1,6 +1,6 @@
 from Crypto.Util import asn1
 
-from client import Client
+from shared.client import Client
 from shared.openssl import *
 from shared.ldap import *
 import os
@@ -46,15 +46,33 @@ class CertificationServer:
 
         self.ldap_server = LDAP_server()
 
-    def signUp(self, client:Client, client_request):
+    def signUp(self, client:Client):
         certif = create_certificate(client.certification, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
-        client.certification = crypto.dump_certificate(crypto.FILETYPE_PEM, certif)
-        return self.ldap_server.create(client)
+        client.certification = certif_to_string(certif)
+        if(self.ldap_server.create(client)):
+            return client
+        else:
+            return None
 
+    def server_certif(self,request):
+        certif= create_certificate(request, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
+        return  certif_to_string(certif)
+
+
+#generate client certification
 # PKI=CertificationServer()
-# l=LDAP_server()
-# client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3')
-# created=l.create(client)
-# print('Is a new entry created ? %s'%created)
-# print(l.findClient('uid3'))
+# k=create_keyPair()
+# req=create_certRequest(k,CN='Certification client')
+# client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', req)
+# client=PKI.signUp(client)
+# save_key_file("client.key",k,passphrase="admin")
+# save_certif_file("client.cert",string_to_certif(client.certification))
 
+
+# generate server certification
+# PKI=CertificationServer()
+# k=create_keyPair()
+# req=create_certRequest(k,CN='Certification server')
+# certif=PKI.server_certif(req)
+# save_key_file("server.key",k,passphrase="admin")
+# save_certif_file("server.cert",string_to_certif(certif))

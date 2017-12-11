@@ -6,13 +6,13 @@ TYPE_RSA = crypto.TYPE_RSA
 # TYPE_DSA = crypto.TYPE_DSA
 #apt-get install libssl-dev
 
-def create_keyPair(type, bits):
+def create_keyPair(type=crypto.TYPE_RSA, bits=1024):
     pkey = crypto.PKey()
     pkey.generate_key(type, bits)
     return pkey
 
 
-def create_certRequest(pkey, digest=b"sha384", **name):
+def create_certRequest(pkey, digest="sha384", **name):
     """
     Create a certificate request.
     Arguments: pkey   - The key to associate with the request
@@ -39,7 +39,7 @@ def create_certRequest(pkey, digest=b"sha384", **name):
     return req
 
 
-def create_certificate(req, issuerCert, issuerKey, serial, notBefore, notAfter, digest=b"sha384"):
+def create_certificate(req, issuerCert, issuerKey, serial, notBefore, notAfter, digest="sha384"):
     """
     Generate a certificate given a certificate request.
     Arguments: req        - Certificate reqeust to use
@@ -81,18 +81,21 @@ def load_certi_file(certfile):
     cert = crypto.load_certificate(crypto.FILETYPE_PEM, st_cert)
     return cert
 
+def certif_to_string(certif):
+    return crypto.dump_certificate(crypto.FILETYPE_PEM, certif)
+
+def string_to_certif(certif):
+    return crypto.load_certificate(crypto.FILETYPE_PEM, certif)
 
 def save_certif_file(filename, certif):
     with open(filename, 'wb') as file:
         file.write(crypto.dump_certificate(crypto.FILETYPE_PEM, certif))
-
 
 def Get_PublicKey_String_from_KeyPair(pkey):
     """ Format a public key as a PEM """
     bio = crypto._new_mem_buf()
     cryptolib.PEM_write_bio_PUBKEY(bio, pkey._pkey)
     return crypto._bio_to_string(bio)
-
 
 def Get_PublicKey_From_KeyPair(keyPair):
     publicKeyString = Get_PublicKey_String_from_KeyPair(keyPair)
