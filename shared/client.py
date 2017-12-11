@@ -1,3 +1,4 @@
+import json
 class Client:
 
     def __init__(self,num=0,nom='',prenom='',login='',password='',certification=None):

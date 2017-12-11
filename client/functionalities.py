@@ -1,24 +1,33 @@
 from OpenSSL import SSL
 import os, socket
 from shared.client import *
+from shared.globle import buffersize, verify_cb
+from shared.openssl import *
 import threading
 
-def verify_cb(conn, cert, errnum, depth, ok):
-    # This obviously has to be updated
-    print ('Got certificate: %s' % cert.get_subject())
-    return ok
 
 class Listener(threading.Thread):
-    def __init__(self, socket,output):
+    def __init__(self, socket,output,commands):
         super().__init__()
         self.output=output
         self.socket=socket
+        self.commands=commands
+
+    def process_msg(self,msg):
+        commande=msg.split(':')[0]
+        if(commande not in self.commands):
+            return msg
+        result=self.commands[commande](msg.split(':')[1])
+        self.socket.send(result)
+        return None
 
     def run(self):
         try:
             while 1:
-                msg = self.socket.recv(1024).decode("utf-8")
-                self.output(msg)
+                msg = self.socket.recv(buffersize).decode("utf-8")
+                msg = self.process_msg(msg)
+                if (msg != None):
+                    self.output(msg)
         except Exception:
             return
 
@@ -34,6 +43,8 @@ class Clientf:
         # Set up client
         self.socket = SSL.Connection(ctx, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
         self.socket.connect((host, port))
+        self.commands={"publickey":self.set_destination}
+        self.destination=None
 
     def authentification(self,client):
         json=client.serialise()
@@ -41,18 +52,23 @@ class Clientf:
             self.socket.send(json)
         except Exception:
             return
-        auth=self.socket.recv(1024).decode("utf-8")
+        auth=self.socket.recv(buffersize).decode("utf-8")
         if(auth=="TRUE"):
             return True
         else:
             return False
 
     def start_listener(self,output):
-        listener=Listener(self.socket,output)
+        listener=Listener(self.socket,output,self.commands)
         listener.start()
+
+    def set_destination(self,pubkey):
+        self.destination=pubkey
 
     def send(self,text):
         try:
+            if self.destination!=None:
+                text=encrypt_RSA(self.destination,text)
             self.socket.send(text)
         except Exception:
             return
@@ -63,7 +79,7 @@ class Clientf:
 
 
 client=Clientf()
-if(client.authentification(Client("1","nom","prenom","login","password"))):
+if(client.authentification(Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3'))):
     client.start_listener(print)
     while(1):
         a=input()

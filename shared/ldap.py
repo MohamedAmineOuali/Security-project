@@ -1,14 +1,12 @@
-from .client import Client
+from shared.client import Client
 from ldap3 import *
 
 
 class LDAP_server:
-    def __init__(self,uri='ldap://localhost',login = "cn=admin,dc=budgie,dc=tn",password = "oussamabudgie"):
+    def __init__(self,uri='ldap://localhost',login = "cn=admin,dc=suse,dc=com",password = "Admin"):
         self.server = Server(uri)
-        self.ldap_base = 'ou=users,dc=budgie,dc=tn'
+        self.ldap_base = 'ou=users,dc=suse,dc=com'
         self.connection = Connection(self.server, user=login, password=password, auto_bind=True)
-        # self.connection.bind()
-        # print(self.connection)
 
 
     def create(self,client:Client):
@@ -32,7 +30,7 @@ class LDAP_server:
             return Client(values['telephoneNumber'], values['cn'], values['sn'], values['uid'],
                           values['userPassword'].__str__().split('\'')[1], values['description'])
         except:
-            return NONE
+            return None
 
 
 # # Test scénario , add client then get it from ldap server
@@ -40,4 +38,4 @@ class LDAP_server:
 # client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3')
 # created=l.create(client)
 # print('Is a new entry created ? %s'%created)
-# print(l.findClient('uid2'))
+# print(l.findClient('uid3'))

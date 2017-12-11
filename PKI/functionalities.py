@@ -46,15 +46,15 @@ class CertificationServer:
 
         self.ldap_server = LDAP_server()
 
-
-    def create_client_certificate(self, client_request):
-
-        certif = create_certificate(client_request, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
-        return certif
-
-
     def signUp(self, client:Client, client_request):
-
-        certif = self.create_client_certificate(client_request)
+        certif = create_certificate(client.certification, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
         client.certification = crypto.dump_certificate(crypto.FILETYPE_PEM, certif)
         return self.ldap_server.create(client)
+
+# PKI=CertificationServer()
+# l=LDAP_server()
+# client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3')
+# created=l.create(client)
+# print('Is a new entry created ? %s'%created)
+# print(l.findClient('uid3'))
+
