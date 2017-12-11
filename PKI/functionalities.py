@@ -5,6 +5,7 @@ from shared.openssl import *
 from shared.ldap import *
 import os
 import socket
+import json
 
 
 class CertificationServer:
@@ -65,10 +66,14 @@ class CertificationServer:
         client.certification = string_to_certif_request(client.certification)
         client = self.signUp(client)
         #send to the client his object with his new certif
-        connection.sendall(client.serialise().encode('utf-8'))
         #send to the client the authority  certif
-
-        connection.send(certif_to_string((self.certif)).encode('utf-8'))
+        client_and_ca = json.dumps(
+            {
+                "client": client.serialise(),
+                "certif_authority": certif_to_string((self.certif))
+            }
+            )
+        connection.send(client_and_ca.encode('utf-8'))
 
     def signUp(self, client:Client):
         certif = create_certificate(client.certification, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)

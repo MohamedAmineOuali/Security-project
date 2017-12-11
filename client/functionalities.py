@@ -113,9 +113,11 @@ class Resgistration:
         serialised_client = self.client.serialise().encode('utf-8')
         self.my_socket.send(serialised_client)
         # recieve client object with his new certifcat
-        client_json_object = self.my_socket.recv(buffersize).decode("utf-8")
         # recieve authority certifcat
-        authority_certif = self.my_socket.recv(buffersize).decode("utf-8")
+        client_json_object_and_authority_certif = self.my_socket.recv(buffersize).decode("utf-8")
+        client_json_object_and_authority_certif = json.loads(client_json_object_and_authority_certif)
+        client_json_object = client_json_object_and_authority_certif["client"]
+        authority_certif = client_json_object_and_authority_certif["certif_authority"]
         # load client object
         client = Client.loadJson(client_json_object)
         # save client key and certif
