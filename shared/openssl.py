@@ -90,6 +90,8 @@ def certif_to_bytes(certif):
 
 def certif_to_string(certif):
     return crypto.dump_certificate(crypto.FILETYPE_PEM, certif).decode("utf-8") 
+def string_to_certif(certif):
+    return crypto.load_certificate(crypto.FILETYPE_PEM, certif)
 
 def bytes_to_certif(certif):
     return crypto.load_certificate(crypto.FILETYPE_PEM, certif)

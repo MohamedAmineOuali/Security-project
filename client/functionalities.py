@@ -129,7 +129,7 @@ class Resgistration:
         self.my_socket = None
 
     def __del__(self):
-        self.my_socket.shutdown()
+        #self.my_socket.shutdown()
         self.my_socket.close()
 
     def fill_client_info(self,num=0,nom='',prenom='',login='',password='',certification=None):
@@ -157,6 +157,9 @@ class Resgistration:
         # recieve client object with his new certifcat
         # recieve authority certifcat
         client_json_object_and_authority_certif = self.my_socket.recv(buffersize).decode("utf-8")
+        if client_json_object_and_authority_certif == "error client exist":
+            print("a client with the same username already exist in the ldap server")
+            return False
         client_json_object_and_authority_certif = json.loads(client_json_object_and_authority_certif)
         client_json_object = client_json_object_and_authority_certif["client"]
         authority_certif = client_json_object_and_authority_certif["certif_authority"]
@@ -168,6 +171,7 @@ class Resgistration:
         save_certif_file("clientTest.cert",string_to_certif(client.certification))
         # save authority certif 
         save_certif_file("serverTest.cert",string_to_certif(authority_certif))
+        return True
     
     def register(self):
         self.fill_client_info(5445, 'iojio', 'klj', 'ohiu', 'hiu')
@@ -175,8 +179,8 @@ class Resgistration:
         self.fill_certification_request_info()
         self.set_up_socket()
         self.validate_with_pki()
-    
-
+#
+#
 # reg = Resgistration()
 # reg.register()
 
