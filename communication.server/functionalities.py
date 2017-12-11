@@ -1,6 +1,7 @@
 from shared.client import Client
 from shared.globle import *
 from shared.ldap import *
+from shared.openssl import *
 
 from OpenSSL import SSL
 import threading
@@ -116,7 +117,7 @@ class Server:
         if cl == None:
             return None
         else:
-            if client.password == cl.password :
+            if hash_SHA512(client.password) == cl.password :
                 return cl
             return None
 

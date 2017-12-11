@@ -79,6 +79,7 @@ class CertificationServer:
         certif = create_certificate(client.certification, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
 <<<<<<< HEAD
         client.certification = certif_to_bytes(certif)
+        client.password = hash_SHA512(client.password)
         if(self.ldap_server.create(client)):
             return client
         else:
@@ -102,10 +103,10 @@ class CertificationServer:
 PKI=CertificationServer()
 k=create_keyPair()
 req=create_certRequest(k,CN='Certification client')
-client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', req)
+client = Client(5555, 'cn5', 'sn5', 'uid5', 'pwd5', req)
 client=PKI.signUp(client)
 save_key_file("client.key",k,passphrase="admin")
-save_certif_file("client.cert",bytes_to_certif(client.certification))
+save_certif_file("client.cert", bytes_to_certif(client.certification))
 
 
 # generate server certification
