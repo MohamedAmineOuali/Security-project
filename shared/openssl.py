@@ -2,6 +2,8 @@ from OpenSSL import crypto
 from OpenSSL._util import lib as cryptolib
 from Crypto.PublicKey import RSA
 from pycparser.c_ast import BinaryOp
+import base64
+import hashlib
 
 TYPE_RSA = crypto.TYPE_RSA
 # TYPE_DSA = crypto.TYPE_DSA
@@ -85,8 +87,19 @@ def load_certi_file(certfile):
 def certif_to_bytes(certif):
     return crypto.dump_certificate(crypto.FILETYPE_PEM, certif)
 
+
+def certif_to_string(certif):
+    return crypto.dump_certificate(crypto.FILETYPE_PEM, certif).decode("utf-8") 
+
 def bytes_to_certif(certif):
     return crypto.load_certificate(crypto.FILETYPE_PEM, certif)
+# cause not the same thing
+def certif_request_to_string(certif):
+    return crypto.dump_certificate_request(crypto.FILETYPE_PEM, certif).decode("utf-8") 
+
+def string_to_certif_request(certif):
+    return crypto.load_certificate_request(crypto.FILETYPE_PEM, certif)
+
 
 
 def save_certif_file(filename, certif):
@@ -104,13 +117,40 @@ def Get_PublicKey_From_KeyPair(keyPair):
     return RSA.importKey(publicKeyString)
 
 def encrypt_with_certif(cert,msg):
-    pub_key = cert.get_pubkey()
-    return pub_key.encrypt(msg.encode('utf-8'), '')
+    pub_key = Get_PublicKey_From_KeyPair(cert.get_pubkey())
+    return base64.b64encode(pub_key.encrypt(msg.encode('utf-8'),'')[0]).decode()
 
+def decrypt(key,data):
+    try:
+        data = base64.b64decode(data.encode())
+        private_key = Get_PrivateKey_From_KeyPair(key)
+        return private_key.decrypt(data).decode('utf-8')
+    except:
+        return None
+
+def sign(key,data,digest="sha256"):
+    return base64.b64encode(crypto.sign(key, data, digest)).decode()
+
+def verify(cert,signature,data,digest="sha256"):
+    try:
+        signature=base64.b64decode(signature.encode())
+        crypto.verify(cert, signature, data, digest)
+        return True
+    except:
+        return False
 
 def Get_PrivateKey_From_KeyPair(keyPair):
     private_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, keyPair)
     return RSA.importKey(private_key)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -121,6 +161,8 @@ def encrypt_RSA(public_key, data):
 def decrypt_RSA(private_key, data_encrypted):
     return private_key.decrypt(data_encrypted).decode('utf-8')
 
+def hash_SHA512(data):
+    return hashlib.sha512(data.encode('utf-8')).hexdigest()
 
 ## Generate key pair
 # kp = create_keyPair(TYPE_RSA, 4096)
