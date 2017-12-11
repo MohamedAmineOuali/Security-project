@@ -82,10 +82,17 @@ def load_certi_file(certfile):
     return cert
 
 def certif_to_string(certif):
-    return crypto.dump_certificate(crypto.FILETYPE_PEM, certif)
+    return crypto.dump_certificate(crypto.FILETYPE_PEM, certif).decode("utf-8") 
 
 def string_to_certif(certif):
     return crypto.load_certificate(crypto.FILETYPE_PEM, certif)
+# cause not the same thing
+def certif_request_to_string(certif):
+    return crypto.dump_certificate_request(crypto.FILETYPE_PEM, certif).decode("utf-8") 
+
+def string_to_certif_request(certif):
+    return crypto.load_certificate_request(crypto.FILETYPE_PEM, certif)
+
 
 def save_certif_file(filename, certif):
     with open(filename, 'wb') as file:
