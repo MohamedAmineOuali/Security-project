@@ -1,10 +1,12 @@
 from OpenSSL import SSL
 import os, socket
 from shared.client import *
-from shared.globle import buffersize, verify_cb
+from shared.globle import *
 from shared.openssl import *
 import threading
 import base64
+
+
 
 class Listener(threading.Thread):
     def __init__(self, socket,output,commands):
@@ -75,6 +77,9 @@ class Clientf:
         try:
             if self.selected!=None:
                 text=encrypt_with_certif(self.selected,text)
+            if self.sign:
+                signature=sign(self.key,text)
+                text=signature + signpattern + text
             self.socket.send(text)
         except Exception as e:
             print (e)
@@ -85,9 +90,30 @@ class Clientf:
 
     def select_destination(self,login):
         try:
-            self.selected=self.clients['login']
+            self.selected=self.clients[login]
         except Exception as e:
             print (e)
+
+    def output(self,msg: str):
+        text=''
+        if signpattern in msg:
+            m = msg.split(signpattern)
+            signature = m[0]
+            msg = m[1]
+            for key,cert in self.clients.items():
+                if(verify(cert,signature,msg)):
+                    text+=key+': '
+                    break
+        if (text == ''):
+            text += 'anonyme: '
+
+        d=decrypt(self.key,msg)
+        if(d==None):
+            text+=msg
+        else:
+            text+=d
+
+        print(text)
 
     def __del__(self):
         self.socket.shutdown()
@@ -95,8 +121,13 @@ class Clientf:
 
 
 client=Clientf()
+# client.sign=True
+
+
+
 if(client.authentification(Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3'))):
-    client.start_listener(print)
+    client.start_listener(client.output)
+    client.select_destination('uid3')
     while(1):
         a=input()
         client.send(a)
