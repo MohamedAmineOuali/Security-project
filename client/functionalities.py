@@ -177,8 +177,8 @@ class Resgistration:
         self.validate_with_pki()
     
 
-reg = Resgistration()
-reg.register()
+# reg = Resgistration()
+# reg.register()
 
 ####################
 
@@ -188,13 +188,11 @@ reg.register()
 
 
 client=Clientf()
-# client.sign=True
-
-
+client.sign=True
 
 if(client.authentification(Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3'))):
     client.start_listener(client.output)
-    client.select_destination('uid3')
+    # client.select_destination('uid3')
     while(1):
         a=input()
         client.send(a)

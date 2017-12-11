@@ -3,7 +3,7 @@ from ldap3 import *
 
 
 class LDAP_server:
-    def __init__(self,uri='ldap://localhost',login = "cn=admin,dc=suse,dc=com",password = "Admin"):
+    def __init__(self, uri='ldap://localhost', login="cn=admin,dc=suse,dc=com", password="Admin"):
         self.server = Server(uri)
         self.ldap_base = 'ou=users,dc=suse,dc=com'
         self.connection = Connection(self.server, user=login, password=password, auto_bind=True)
@@ -16,7 +16,7 @@ class LDAP_server:
         classObjects=['inetOrgPerson','person']
         return self.connection.add('uid={},{}'.format(client.login, self.ldap_base), classObjects,
                       {'cn': client.nom, 'sn': client.prenom, 'userPassword': client.password,
-                       'telephoneNumber': client.num, 'description': client.certification.decode()})
+                       'telephoneNumber': client.num, 'description': client.certification})
 
 
 

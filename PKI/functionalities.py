@@ -65,8 +65,9 @@ class CertificationServer:
         #create certif & sign up client
         client.certification = string_to_certif_request(client.certification)
         client = self.signUp(client)
-        #send to the client his object with his new certif
-        #send to the client the authority  certif
+        if client==None:
+            connection.send(b"error client exist")
+            return
         client_and_ca = json.dumps(
             {
                 "client": client.serialise(),
@@ -77,22 +78,11 @@ class CertificationServer:
 
     def signUp(self, client:Client):
         certif = create_certificate(client.certification, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
-<<<<<<< HEAD
-        client.certification = certif_to_bytes(certif)
-        client.password = hash_SHA512(client.password)
-        if(self.ldap_server.create(client)):
-            return client
-        else:
-            return None
-=======
         client.certification = certif_to_string(certif)
-        #if(self.ldap_server.create(client)):
-            #return client
-        #else:
-            #return None
-        # add to ldap failed
-        return client
->>>>>>> 3b449d3aad796f24dc8506e6bb3fb2db6c04ea62
+        if(self.ldap_server.create(client)):
+           return client
+        else:
+           return None
 
     def server_certif(self,request):
         certif= create_certificate(request, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
@@ -100,13 +90,13 @@ class CertificationServer:
 
 
 # generate client certification
-PKI=CertificationServer()
-k=create_keyPair()
-req=create_certRequest(k,CN='Certification client')
-client = Client(5555, 'cn5', 'sn5', 'uid5', 'pwd5', req)
-client=PKI.signUp(client)
-save_key_file("client.key",k,passphrase="admin")
-save_certif_file("client.cert", bytes_to_certif(client.certification))
+# PKI=CertificationServer()
+# k=create_keyPair()
+# req=create_certRequest(k,CN='Certification client')
+# client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', req)
+# client=PKI.signUp(client)
+# save_key_file("client.key",k,passphrase="admin")
+# save_certif_file("client.cert",bytes_to_certif(client.certification))
 
 
 # generate server certification
@@ -115,12 +105,10 @@ save_certif_file("client.cert", bytes_to_certif(client.certification))
 # req=create_certRequest(k,CN='Certification server')
 # certif=PKI.server_certif(req)
 # save_key_file("server.key",k,passphrase="admin")
-<<<<<<< HEAD
 # save_certif_file("server.cert",bytes_to_certif(certif))
-=======
 # save_certif_file("server.cert",string_to_certif(certif))
 
 certification_server = CertificationServer()
 while 1:
     certification_server.listen()
->>>>>>> 3b449d3aad796f24dc8506e6bb3fb2db6c04ea62
+
