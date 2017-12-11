@@ -6,27 +6,20 @@ from OpenSSL import SSL
 import threading
 import sys, os, select, socket
 
+from shared.openssl import bytes_to_certif
+import base64
 
 class ClientThread(threading.Thread):
 
-    def __init__(self, ip, port, socket:SSL.Connection,output,addClient,removeClient,commands):
+    def __init__(self, ip, port, socket:SSL.Connection,output,addClient,removeClient):
         threading.Thread.__init__(self)
         self.source = ip+":"+str(port)
         self.socket = socket
         self.output=output
         self.addClient=addClient
         self.removeClient=removeClient
-        self.commands=commands
 
 
-
-    def process_msg(self,msg):
-        commande=msg.split(':')[0]
-        if(commande not in self.commands):
-            return msg
-        result=self.commands[commande](msg.split(':')[1])
-        self.socket.send(result)
-        return None
 
     def run(self):
         try:
@@ -36,15 +29,12 @@ class ClientThread(threading.Thread):
         client=Client.loadJson(json)
         self.client = Server.authentification(client)
         if (self.client!=None):
-            self.socket.send("TRUE")
-
-            self.addClient(self.source,self)
             try:
+                self.socket.send("TRUE")
+                self.addClient(self.source,self)
                 while 1:
                     msg = self.socket.recv(buffersize).decode("utf-8")
-                    msg=self.process_msg(msg)
-                    if(msg!=None):
-                        self.output(self.source,msg)
+                    self.output(self.source,msg)
             except SSL.Error:
                 print ('Connection died unexpectedly')
         else:
@@ -73,14 +63,23 @@ class Server:
         self.server = SSL.Connection(ctx, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
         self.server.bind(('', port))
         self.server.listen(nb)
-        self.commands={'request':self.public_key_request}
 
     def __del__(self):
+        for key in self.clients:
+            try:
+                self.clients[key].socket.shutdown()
+                self.clients[key].socket.close()
+            except Exception:
+                return
+            try:
+                del self.clients[key]
+            except Exception:
+                return
         self.server.close()
 
     def listen(self):
         connection, address=self.server.accept()
-        client=ClientThread(address[0],address[1],connection,self.writeMsg,self.addClient,self.removeClient,self.commands)
+        client=ClientThread(address[0],address[1],connection,self.writeMsg,self.addClient,self.removeClient)
         client.start()
 
 
@@ -92,11 +91,17 @@ class Server:
         return
 
     def addClient(self,key,object):
-        self.clients[key]=object
+        a=object.client.certification.encode()
+        cert=bytes_to_certif(a)
+        for id, client in self.clients.items():
+            client.socket.send('newUser$$:'+object.client.login+'||'+object.client.certification)
+        for id, client in self.clients.items():
+            object.socket.send('newUser$$:'+client.client.login+'||'+client.client.certification)
+        self.clients[key] = object
+        return
 
     def removeClient(self,key):
         try:
-            self.clients[key].socket.shutdown()
             self.clients[key].socket.close()
         except Exception:
             return
@@ -104,12 +109,6 @@ class Server:
             del self.clients[key]
         except Exception:
             return
-
-    def public_key_request(self,login):
-        for id, client in self.clients.items():
-            if (client.client.login==login):
-                return "publickey:"+client.client.certification
-        return "login not found"
 
     @staticmethod
     def authentification(client):

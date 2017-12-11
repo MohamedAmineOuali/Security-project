@@ -1,6 +1,7 @@
 from OpenSSL import crypto
 from OpenSSL._util import lib as cryptolib
 from Crypto.PublicKey import RSA
+from pycparser.c_ast import BinaryOp
 
 TYPE_RSA = crypto.TYPE_RSA
 # TYPE_DSA = crypto.TYPE_DSA
@@ -81,11 +82,12 @@ def load_certi_file(certfile):
     cert = crypto.load_certificate(crypto.FILETYPE_PEM, st_cert)
     return cert
 
-def certif_to_string(certif):
+def certif_to_bytes(certif):
     return crypto.dump_certificate(crypto.FILETYPE_PEM, certif)
 
-def string_to_certif(certif):
+def bytes_to_certif(certif):
     return crypto.load_certificate(crypto.FILETYPE_PEM, certif)
+
 
 def save_certif_file(filename, certif):
     with open(filename, 'wb') as file:
@@ -101,6 +103,9 @@ def Get_PublicKey_From_KeyPair(keyPair):
     publicKeyString = Get_PublicKey_String_from_KeyPair(keyPair)
     return RSA.importKey(publicKeyString)
 
+def encrypt_with_certif(cert,msg):
+    pub_key = cert.get_pubkey()
+    return pub_key.encrypt(msg.encode('utf-8'), '')
 
 
 def Get_PrivateKey_From_KeyPair(keyPair):

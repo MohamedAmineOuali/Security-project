@@ -16,7 +16,7 @@ class LDAP_server:
         classObjects=['inetOrgPerson','person']
         return self.connection.add('uid={},{}'.format(client.login, self.ldap_base), classObjects,
                       {'cn': client.nom, 'sn': client.prenom, 'userPassword': client.password,
-                       'telephoneNumber': client.num, 'description': client.certification})
+                       'telephoneNumber': client.num, 'description': client.certification.decode()})
 
 
 
@@ -28,7 +28,7 @@ class LDAP_server:
             # print(values)
 
             return Client(values['telephoneNumber'], values['cn'], values['sn'], values['uid'],
-                          values['userPassword'].__str__().split('\'')[1], values['description'])
+                          values['userPassword'].__str__().split('\'')[1], values['description'][0])
         except:
             return None
 

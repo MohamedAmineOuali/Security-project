@@ -17,14 +17,13 @@ class Client:
 
     def serialise(self):
         attributes=dict(self.__dict__)
-        if(not isinstance(attributes['certification'],str)):
-            attributes['certification']=certif_to_string(attributes['certification'])
+        if((not isinstance(attributes['certification'],str)) and attributes['certification']!=None):
+            attributes['certification']=certif_to_bytes(attributes['certification'])
         return json.dumps(attributes)  # data serialized
 
     @staticmethod
     def loadJson(data):
-        data_loaded = json.loads(data)  # data loaded
-
+        data_loaded = json.loads(data,strict=False)  # data loaded
         client=Client()
         client.__dict__.update(data_loaded)
         return client
