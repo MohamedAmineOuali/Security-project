@@ -1,13 +1,15 @@
 from Crypto.Util import asn1
-
+from shared.globle import *
 from shared.client import Client
 from shared.openssl import *
 from shared.ldap import *
 import os
+import socket
+import json
 
 
 class CertificationServer:
-    def __init__(self,keyfile='keys/CA.pkey',certificatefile='keys/CA.cert'):
+    def __init__(self,port=2128,nb_connections=3,keyfile='keys/CA.pkey',certificatefile='keys/CA.cert'):
         if os.path.isfile(keyfile):
             self.key = load_key_file(keyfile)
         else:
@@ -46,13 +48,50 @@ class CertificationServer:
 
         self.ldap_server = LDAP_server()
 
+        #run certification server
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server.bind(('',port))
+        self.server.listen(nb_connections)
+
+    def __del__(self):
+        self.server.close()
+
+    def listen(self):
+        connection, address = self.server.accept()
+        client_json_object = connection.recv(buffersize).decode("utf-8") # recieved a client object with his certif request
+        client = Client.loadJson(client_json_object)
+        # verify identity: skype, phone call, visit
+        #create certif & sign up client
+        client.certification = string_to_certif_request(client.certification)
+        client = self.signUp(client)
+        #send to the client his object with his new certif
+        #send to the client the authority  certif
+        client_and_ca = json.dumps(
+            {
+                "client": client.serialise(),
+                "certif_authority": certif_to_string((self.certif))
+            }
+            )
+        connection.send(client_and_ca.encode('utf-8'))
+
     def signUp(self, client:Client):
         certif = create_certificate(client.certification, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
+<<<<<<< HEAD
         client.certification = certif_to_bytes(certif)
         if(self.ldap_server.create(client)):
             return client
         else:
             return None
+=======
+        client.certification = certif_to_string(certif)
+        #if(self.ldap_server.create(client)):
+            #return client
+        #else:
+            #return None
+        # add to ldap failed
+        return client
+>>>>>>> 3b449d3aad796f24dc8506e6bb3fb2db6c04ea62
 
     def server_certif(self,request):
         certif= create_certificate(request, self.certif, self.key, 0, 0, 60 * 60 * 24 * 365 * 5)
@@ -75,4 +114,12 @@ save_certif_file("client.cert",bytes_to_certif(client.certification))
 # req=create_certRequest(k,CN='Certification server')
 # certif=PKI.server_certif(req)
 # save_key_file("server.key",k,passphrase="admin")
+<<<<<<< HEAD
 # save_certif_file("server.cert",bytes_to_certif(certif))
+=======
+# save_certif_file("server.cert",string_to_certif(certif))
+
+certification_server = CertificationServer()
+while 1:
+    certification_server.listen()
+>>>>>>> 3b449d3aad796f24dc8506e6bb3fb2db6c04ea62
