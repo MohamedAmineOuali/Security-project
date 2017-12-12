@@ -4,7 +4,7 @@ from PyQt5.QtCore import pyqtSignal, QObject, QCoreApplication
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication
 
 from client.AppGUI import Ui_UserWindow
-from client.functionalities import Clientf
+from client.functionalities import Clientf, Resgistration
 
 from shared.client import Client
 
@@ -21,7 +21,10 @@ class Action(QObject):
         self.gui.login_btn.clicked.connect(self.login)
         self.gui.send_btn.clicked.connect(self.send)
         self.gui.signCheck.stateChanged.connect(self.sign_change)
+        self.gui.file_selection_btn.clicked.connect(self.select_registration_directory)
+        self.gui.register_btn.clicked.connect(self.register)
         self.directory=None
+        self.registration_directory = None
         self.gui.clientsLists.addItem("all users")
         self.gui.clientsLists.currentTextChanged.connect(self.userSelect)
 
@@ -29,6 +32,10 @@ class Action(QObject):
         self.directory = str(QFileDialog.getExistingDirectory(self.gui.centralwidget, "Select Directory"))
         self.gui.label_directory.setText(self.directory)
 
+    def select_registration_directory(self):
+        self.registration_directory = str(QFileDialog.getExistingDirectory(self.gui.centralwidget, "Select Directory"))
+        self.gui.public_key_file_input.setText(self.registration_directory)
+   
     def sign_change(self):
         self.client.sign=not self.client.sign
 
@@ -75,6 +82,41 @@ class Action(QObject):
             msg.setText(auth)
             msg.setWindowTitle("Authentification error")
             msg.show()
+
+    def register(self):
+        if self.registration_directory == None or self.registration_directory == '':
+            msg = QMessageBox(self.gui.centralwidget)
+            msg.setIcon(QMessageBox.Information)
+            msg.setText("select a directory")
+            msg.setDetailedText("to save key and certificats")
+            msg.setWindowTitle("Error")
+            msg.show()
+            return
+        firstName= self.gui.fname_input.text()
+        lastName = self.gui.lname_input.text()
+        login=self.gui.username_input.text()
+        password=self.gui.password_input.text()
+        #self.direcory
+        if login=="" or password=="" or firstName == "" or lastName == "":
+            msg = QMessageBox(self.gui.centralwidget)
+            msg.setIcon(QMessageBox.Information)
+            msg.setText("specifier first name, last name, login et password ")
+            msg.setWindowTitle("Error")
+            msg.show()
+            return
+
+        print(firstName, lastName, login, password, self.registration_directory)
+        reg = Resgistration()
+        registred = reg.register(self.registration_directory ,lastName, firstName, login, password)
+        if registred == True:
+            print("registration succeded")
+        else:
+            msg = QMessageBox(self.gui.centralwidget)
+            msg.setIcon(QMessageBox.Information)
+            msg.setText(registred)
+            msg.setWindowTitle("Registration error")
+            msg.show()
+
 
     def del_client(self,login):
         self.gui.clientsLists.setCurrentText(login)

@@ -148,12 +148,12 @@ class Resgistration:
         self.my_socket.shutdown()
         self.my_socket.close()
 
-    def fill_client_info(self,num=0,nom='',prenom='',login='',password='',certification=None):
+    def fill_client_info(self,nom='',prenom='',login='',password='',num=0,certification=None):
     
         #
         self.client =  Client(num, nom, prenom, login, password, certification)
         # pour le test
-        self.client = Client(33373, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3')
+        #self.client = Client(33373, 'cn3', 'sn3', 'uid3', 'pwd3', 'certif3')
 
     def generate_keypPair(self):
         self.key_pair = create_keyPair(crypto.TYPE_RSA, 1024)
@@ -166,35 +166,41 @@ class Resgistration:
             self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.my_socket.connect((self.host, self.port))
 
-    def validate_with_pki(self):
+    def validate_with_pki(self,registration_directory):
         # send client and certif request
         serialised_client = self.client.serialise().encode('utf-8')
         self.my_socket.send(serialised_client)
         # recieve client object with his new certifcat
         # recieve authority certifcat
         client_json_object_and_authority_certif = self.my_socket.recv(buffersize).decode("utf-8")
+        if client_json_object_and_authority_certif == "error client exist":
+            print("a client with the same username already exist in the ldap server")
+            return False
         client_json_object_and_authority_certif = json.loads(client_json_object_and_authority_certif)
         client_json_object = client_json_object_and_authority_certif["client"]
         authority_certif = client_json_object_and_authority_certif["certif_authority"]
         # load client object
         client = Client.loadJson(client_json_object)
         # save client key and certif
-        save_key_file("clientTest.key",self.key_pair,passphrase=self.client.password)
+        save_key_file(registration_directory+"/client.key",self.key_pair,passphrase=self.client.password)
         # save client certif
-        save_certif_file("clientTest.cert",string_to_certif(client.certification))
+        save_certif_file(registration_directory+"/client.cert",string_to_certif(client.certification))
         # save authority certif 
-        save_certif_file("serverTest.cert",string_to_certif(authority_certif))
-    
-    def register(self):
-        self.fill_client_info(5445, 'iojio', 'klj', 'ohiu', 'hiu')
+        save_certif_file(registration_directory+"/CA.cert",string_to_certif(authority_certif))
+        return True
+    def register(self,registration_directory,nom,prenom,login,password):
+        self.fill_client_info(nom, prenom, login, password)
         self.generate_keypPair()
         self.fill_certification_request_info()
         self.set_up_socket()
-        self.validate_with_pki()
+        result = self.validate_with_pki(registration_directory)
+        self.my_socket.close()
+        return result 
     
 
 # reg = Resgistration()
 # reg.register()
+
 
 ####################
 
