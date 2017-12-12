@@ -216,6 +216,7 @@ if __name__ == "__main__":
     UserWindow = QtWidgets.QMainWindow()
     ui = Ui_UserWindow()
     ui.setupUi(UserWindow)
+    app.lastWindowClosed.connect(ui.action.closeAll)
     UserWindow.show()
     sys.exit(app.exec_())
 

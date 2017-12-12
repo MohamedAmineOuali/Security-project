@@ -105,12 +105,13 @@ class Server:
         return
 
     def removeClient(self,key):
-        o=self.clients[key]
+        o=None
         try:
             self.clients[key].socket.close()
         except Exception:
             return
         try:
+            o = self.clients[key]
             del self.clients[key]
         except Exception:
             return
@@ -119,7 +120,8 @@ class Server:
                 client.socket.send(deletpattern+":"+key+'/'+o.client.login)
         except Exception as e:
             print(e)
-        print("deconnect: "+key+'/'+o.client.login)
+        if(o!=None):
+            print("deconnect: "+key+'/'+o.client.login)
 
     @staticmethod
     def authentification(client):

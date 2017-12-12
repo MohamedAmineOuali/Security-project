@@ -46,10 +46,13 @@ class Clientf:
         # Set up client
         self.socket = SSL.Connection(ctx, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
         self.socket.connect((host, port))
-        self.commands={"newUser$$":self.add_user}
+        self.commands={newpettern:self.add_user,deletpattern:self.delete_user}
         self.clients={}
         self.selected=None
         self.sign=False
+
+    def delete_user(self,user):
+        self.deleteClient(user)
 
     def authentification(self,client):
         json=client.serialise()
@@ -61,10 +64,12 @@ class Clientf:
         if(auth=="TRUE"):
             return True
         else:
-            return False
+            return auth
 
-    def start_listener(self,output):
+    def start_listener(self,output,addClient,deleteClient):
         self.print=output
+        self.addClient=addClient
+        self.deleteClient=deleteClient
         listener=Listener(self.socket,self.output,self.commands)
         listener.start()
 
@@ -73,6 +78,7 @@ class Clientf:
         cert=infos[1].encode()
         a=bytes_to_certif(cert)
         self.clients[infos[0]]=a
+        self.addClient(infos[0])
 
     def send(self,text):
         try:
@@ -93,6 +99,7 @@ class Clientf:
         try:
             self.selected=self.clients[login]
         except Exception as e:
+            self.selected=None
             print (e)
 
     def output(self,msg: str):
@@ -117,8 +124,16 @@ class Clientf:
         self.print(text)
 
     def __del__(self):
-        self.socket.shutdown()
+        try:
+            self.socket.shutdown()
+        except Exception as e:
+            print("shatdown")
         self.socket.close()
+
+
+
+
+
 
 ####################
 class Resgistration:

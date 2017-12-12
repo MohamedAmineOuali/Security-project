@@ -100,7 +100,8 @@ def certif_request_to_string(certif):
 def string_to_certif_request(certif):
     return crypto.load_certificate_request(crypto.FILETYPE_PEM, certif)
 
-
+def string_to_certif(certif):
+    return crypto.load_certificate(crypto.FILETYPE_PEM, certif)
 
 def save_certif_file(filename, certif):
     with open(filename, 'wb') as file:

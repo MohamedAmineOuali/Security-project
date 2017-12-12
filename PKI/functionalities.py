@@ -94,7 +94,7 @@ class CertificationServer:
 PKI=CertificationServer()
 k=create_keyPair()
 req=create_certRequest(k,CN='Certification client')
-client = Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3', req)
+client = Client(3333, 'cn3', 'sn3', 'uid2', 'pwd2', req)
 client=PKI.signUp(client)
 save_key_file("client.key",k,passphrase="admin")
 save_certif_file("client.cert",bytes_to_certif(client.certification))
