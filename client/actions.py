@@ -113,7 +113,7 @@ class Action(QObject):
         else:
             msg = QMessageBox(self.gui.centralwidget)
             msg.setIcon(QMessageBox.Information)
-            msg.setText(registred)
+            msg.setText("errr")
             msg.setWindowTitle("Registration error")
             msg.show()
 
