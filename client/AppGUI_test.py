@@ -257,7 +257,7 @@ class Ui_UserWindow(object):
         self.actionOpen_new_window.setText(_translate("UserWindow", "&open new window"))
 
 
-import image_rc
+import client.GUIFile.image
 
 if __name__ == "__main__":
     import sys
