@@ -50,7 +50,7 @@ class Server:
 
     ldap_server = LDAP_server()
 
-    def __init__(self, port=2025, nb=3,key='keys/server.key',cert='keys/server.cert',authourity='keys/CA.cert'):
+    def __init__(self, port=portCS, nb=connection_nb_CS,key='keys/server.key',cert='keys/server.cert',authourity='keys/CA.cert'):
         # Initialize context
         self.clients = {}
         ctx = SSL.Context(SSL.SSLv23_METHOD)

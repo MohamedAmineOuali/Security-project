@@ -9,7 +9,7 @@ import json
 
 
 class CertificationServer:
-    def __init__(self,port=2128,nb_connections=3,keyfile='keys/CA.pkey',certificatefile='keys/CA.cert'):
+    def __init__(self,port=portPKI,nb_connections=connection_nb_PKI,keyfile='keys/CA.pkey',certificatefile='keys/CA.cert'):
         if os.path.isfile(keyfile):
             self.key = load_key_file(keyfile)
         else:

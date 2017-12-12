@@ -34,7 +34,7 @@ class Listener(threading.Thread):
             self.socket.close()
 
 class Clientf:
-    def __init__(self,host='localhost',port=2025,key='keys/client.key',cert='keys/client.cert',authourity='keys/CA.cert'):
+    def __init__(self,host=hostCS,port=portCS,key='keys/client.key',cert='keys/client.cert',authourity='keys/CA.cert'):
         # Initialize context
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_verify(SSL.VERIFY_PEER, verify_cb)  # Demand a certificate
@@ -138,7 +138,7 @@ class Clientf:
 ####################
 class Resgistration:
     
-    def __init__(self,host='',port=2128):
+    def __init__(self,host=hostPKI,port=portPKI):
         self.client = None
         self.host = host
         self.port = port
