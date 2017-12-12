@@ -79,9 +79,12 @@ class Server:
         self.server.close()
 
     def listen(self):
-        connection, address=self.server.accept()
-        client=ClientThread(address[0],address[1],connection,self.writeMsg,self.addClient,self.removeClient)
-        client.start()
+        try:
+            connection, address=self.server.accept()
+            client=ClientThread(address[0],address[1],connection,self.writeMsg,self.addClient,self.removeClient)
+            client.start()
+        except Exception as e:
+            print(e)
 
 
     def writeMsg(self,source,msg,destination='ALL'):
@@ -89,19 +92,20 @@ class Server:
             for id,client in self.clients.items():
                 if(id!=source):
                     client.socket.send(msg)
+                    print(msg)
         return
 
     def addClient(self,key,object):
-        a=object.client.certification.encode()
-        cert=bytes_to_certif(a)
         for id, client in self.clients.items():
-            client.socket.send('newUser$$:'+object.client.login+'||'+object.client.certification)
+            client.socket.send(newpettern+":"+key+'/'+object.client.login+'||'+object.client.certification)
         for id, client in self.clients.items():
-            object.socket.send('newUser$$:'+client.client.login+'||'+client.client.certification)
+            object.socket.send(newpettern+":"+key+'/'+client.client.login+'||'+client.client.certification)
+        print("connect: "+key+'/'+object.client.login)
         self.clients[key] = object
         return
 
     def removeClient(self,key):
+        o=self.clients[key]
         try:
             self.clients[key].socket.close()
         except Exception:
@@ -110,6 +114,12 @@ class Server:
             del self.clients[key]
         except Exception:
             return
+        try:
+            for id, client in self.clients.items():
+                client.socket.send(deletpattern+":"+key+'/'+o.client.login)
+        except Exception as e:
+            print(e)
+        print("deconnect: "+key+'/'+o.client.login)
 
     @staticmethod
     def authentification(client):
