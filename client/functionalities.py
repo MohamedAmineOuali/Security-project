@@ -64,7 +64,8 @@ class Clientf:
             return False
 
     def start_listener(self,output):
-        listener=Listener(self.socket,output,self.commands)
+        self.print=output
+        listener=Listener(self.socket,self.output,self.commands)
         listener.start()
 
     def add_user(self,info):
@@ -113,7 +114,7 @@ class Clientf:
         else:
             text+=d
 
-        print(text)
+        self.print(text)
 
     def __del__(self):
         self.socket.shutdown()
@@ -187,12 +188,12 @@ class Resgistration:
 
 
 
-client=Clientf()
-client.sign=True
-
-if(client.authentification(Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3'))):
-    client.start_listener(client.output)
-    # client.select_destination('uid3')
-    while(1):
-        a=input()
-        client.send(a)
+# client=Clientf()
+# client.sign=True
+#
+# if(client.authentification(Client(3333, 'cn3', 'sn3', 'uid3', 'pwd3'))):
+#     client.start_listener(client.output)
+#     # client.select_destination('uid3')
+#     while(1):
+#         a=input()
+#         client.send(a)
