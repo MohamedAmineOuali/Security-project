@@ -90,7 +90,7 @@ class CertificationServer:
         return  certif_to_bytes(certif)
 
 
-# # generate client certification
+# generate client certification
 # PKI=CertificationServer()
 # k=create_keyPair()
 # req=create_certRequest(k,CN='Certification client')

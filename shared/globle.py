@@ -1,7 +1,13 @@
 signpattern="$signatures$"
 deletpattern='deleteUser$$'
 newpettern='newUser$$'
+cryptpattern='$$crypt$$'
 buffersize=5000000
+
+ldaplogin="cn=admin,dc=suse,dc=com"
+ldap_base='ou=users,dc=suse,dc=com'
+ldap_password='Admin'
+
 
 hostCS="localhost"
 portCS=2025

@@ -1,11 +1,13 @@
 from shared.client import Client
 from ldap3 import *
 
+from shared.globle import ldaplogin, ldap_base, ldap_password
+
 
 class LDAP_server:
-    def __init__(self, uri='ldap://localhost', login="cn=admin,dc=budgie,dc=tn", password="admin"):
+    def __init__(self, uri='ldap://localhost', login=ldaplogin, password=ldap_password):
         self.server = Server(uri)
-        self.ldap_base = 'ou=users,dc=budgie,dc=tn'
+        self.ldap_base = ldap_base
         self.connection = Connection(self.server, user=login, password=password, auto_bind=True)
 
 

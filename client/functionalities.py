@@ -34,11 +34,11 @@ class Listener(threading.Thread):
             self.socket.close()
 
 class Clientf:
-    def __init__(self,host=hostCS,port=portCS,key='keys/client.key',cert='keys/client.cert',authourity='keys/CA.cert'):
+    def __init__(self,host=hostCS,port=portCS,key='keys/client.key',cert='keys/client.cert',authourity='keys/CA.cert',passphrase=''):
         # Initialize context
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_verify(SSL.VERIFY_PEER, verify_cb)  # Demand a certificate
-        self.key=load_key_file(key)
+        self.key=load_key_file(key,passphrase)
         ctx.use_privatekey(self.key)
         ctx.use_certificate_file(os.path.join(cert))
         ctx.load_verify_locations(os.path.join(authourity))
@@ -84,6 +84,7 @@ class Clientf:
         try:
             if self.selected!=None:
                 text=encrypt_with_certif(self.selected,text)
+                text=cryptpattern+text+cryptpattern
             if self.sign:
                 signature=sign(self.key,text)
                 text=signature + signpattern + text
@@ -115,11 +116,14 @@ class Clientf:
         if (text == ''):
             text += 'anonyme: '
 
-        d=decrypt(self.key,msg)
-        if(d==None):
-            text+=msg
+        if cryptpattern in msg:
+            d=decrypt(self.key,msg.split(cryptpattern)[1])
+            if(d==None):
+                text+="crypted message"
+            else:
+                text+=d
         else:
-            text+=d
+            text+=msg
 
         self.print(text)
 
@@ -127,8 +131,13 @@ class Clientf:
         try:
             self.socket.shutdown()
         except Exception as e:
-            print("shatdown")
-        self.socket.close()
+            return
+        try:
+            self.socket.close()
+        except Exception as e:
+            return
+
+        print("shutdown")
 
 
 
@@ -145,8 +154,12 @@ class Resgistration:
         self.my_socket = None
 
     def __del__(self):
-        self.my_socket.shutdown()
-        self.my_socket.close()
+        #self.my_socket.shutdown()
+        try:
+            self.my_socket.close()
+        except Exception as e:
+            print(e)
+            return
 
     def fill_client_info(self,nom='',prenom='',login='',password='',num=0,certification=None):
     
@@ -166,7 +179,7 @@ class Resgistration:
             self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.my_socket.connect((self.host, self.port))
 
-    def validate_with_pki(self,registration_directory):
+    def validate_with_pki(self,registration_directory,passphrase):
         # send client and certif request
         serialised_client = self.client.serialise().encode('utf-8')
         self.my_socket.send(serialised_client)
@@ -182,18 +195,18 @@ class Resgistration:
         # load client object
         client = Client.loadJson(client_json_object)
         # save client key and certif
-        save_key_file(registration_directory+"/client.key",self.key_pair,passphrase=self.client.password)
+        save_key_file(registration_directory+"/client.key",self.key_pair,passphrase)
         # save client certif
         save_certif_file(registration_directory+"/client.cert",string_to_certif(client.certification))
         # save authority certif 
         save_certif_file(registration_directory+"/CA.cert",string_to_certif(authority_certif))
         return True
-    def register(self,registration_directory,nom,prenom,login,password):
+    def register(self,registration_directory,nom,prenom,login,password,passphrase):
         self.fill_client_info(nom, prenom, login, password)
         self.generate_keypPair()
         self.fill_certification_request_info()
         self.set_up_socket()
-        result = self.validate_with_pki(registration_directory)
+        result = self.validate_with_pki(registration_directory,passphrase)
         self.my_socket.close()
         return result 
     

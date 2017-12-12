@@ -6,19 +6,59 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>841</width>
+    <width>977</width>
     <height>716</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Secure mail transfert application</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">*{font-size:15px;font-family:&quot;微软雅黑&quot;,&quot;宋体&quot;;color:#333;font-weight:normal;outline:none;}
+QLabel{background:transparent;outline:none;color:#333;}
+
+/**QComboBox,QDateEdit**/
+QComboBox,QDateEdit,QDateTimeEdit{outline:none;color:#333;background-color:#fff;border:1px solid #a9a9a8;border-radius:0px;}
+QComboBox:focus,QDateEdit:focus,QDateTimeEdit:focus{color: #333;border:1px solid #bfbfbf;background-color:#eefcfc;}
+QComboBox::drop-down,QDateEdit::drop-down,QDateTimeEdit::drop-down{border-left:1px solid #a9a9a8;background-color:qlineargradient(y1: 0, x1: 0, y2: 1, x2: 0,stop: 0 #fcfcfb, stop: 0.5 #f1eeec,stop: 1 #e7e1dc);}
+QComboBox::drop-down:hover{border-left:1px solid #a9a9a8;background-color:qlineargradient(y1: 0, x1: 0, y2: 1, x2: 0,stop: 0 #eee, stop: 0.5 #ddd,stop: 1 #ccc);}
+
+QPushButton{ color: white; background-color: #27a9e3; border-width: 0px; border-radius: 3px;}
+
+/**QRadioButton**/
+QRadioButton {spacing: 5px;outline:none;}
+QRadioButton::indicator {width: 21px;height: 21px;}
+
+/**QCheckBox**/
+QCheckBox {color:#333;spacing:0px;outline:none;}
+QCheckBox::indicator {width: 15px; height: 15px;margin-right:5px;}
+
+/**QTabWidget**/
+QTabWidget{border:none;margin:0px;outline:none;}
+QTabWidget[showHeader='true']::pane{border:1px solid #55B023;border-radius:0px;position: absolute;top: -1px;}
+QTabWidget[showHeader='false']::pane{border:none;position: absolute;margin:0px;}
+QTabWidget[showHeader='true'] QTabBar::tab{alignment:left;color:white;padding:2px 16px;margin-top:3px;margin-left:5px;height:21px;border-top-left-radius: 5px;border-top-right-radius: 5px;background:#C9B084}
+QTabWidget[showHeader='true'] QTabBar::tab:selected{background:#55B023;margin-top:1px;height:23px;}
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
+      </property>
+      <property name="documentMode">
+       <bool>false</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <property name="movable">
+       <bool>false</bool>
       </property>
       <widget class="QWidget" name="regsiter">
        <attribute name="title">
@@ -27,154 +67,118 @@
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>721</width>
-          <height>401</height>
+          <x>-10</x>
+          <y>120</y>
+          <width>961</width>
+          <height>314</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="3">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="3" column="0">
+         <item row="3" column="1">
           <widget class="QLabel" name="label_4">
            <property name="text">
             <string>Password</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="2" column="1">
           <widget class="QLabel" name="label_3">
            <property name="text">
             <string>login</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
-          <widget class="QCheckBox" name="key_generation_checkbox">
-           <property name="text">
-            <string/>
+         <item row="7" column="4">
+          <spacer name="horizontalSpacer_14">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-          </widget>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
-         <item row="2" column="1" colspan="2">
+         <item row="2" column="2" colspan="2">
           <widget class="QLineEdit" name="username_input"/>
          </item>
-         <item row="1" column="1" colspan="2">
+         <item row="1" column="2" colspan="2">
           <widget class="QLineEdit" name="lname_input"/>
          </item>
-         <item row="0" column="1" colspan="2">
+         <item row="0" column="2" colspan="2">
           <widget class="QLineEdit" name="fname_input"/>
          </item>
-         <item row="3" column="1" colspan="2">
+         <item row="3" column="2" colspan="2">
           <widget class="QLineEdit" name="password_input"/>
          </item>
-         <item row="4" column="2">
-          <widget class="QPushButton" name="file_selection_btn">
-           <property name="text">
-            <string>browse</string>
+         <item row="7" column="5">
+          <spacer name="horizontalSpacer_11">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-          </widget>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
-         <item row="1" column="0">
+         <item row="1" column="1">
           <widget class="QLabel" name="label_2">
            <property name="text">
             <string>Last name</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="1" colspan="2">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>i have no key , generate one for me please</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
+         <item row="5" column="2">
           <widget class="QLineEdit" name="public_key_file_input">
            <property name="enabled">
             <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
+         <item row="0" column="1">
           <widget class="QLabel" name="label">
            <property name="text">
             <string>First name</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="1">
           <widget class="QLabel" name="label_11">
            <property name="text">
-            <string>Key file</string>
+            <string>Key directory</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="2" column="3">
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="3" column="3">
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="4" column="3">
-          <spacer name="horizontalSpacer_9">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="5" column="3">
+          <widget class="QSplitter" name="splitter_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QPushButton" name="file_selection_btn_2">
+            <property name="text">
+             <string>browse</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+         <item row="7" column="2" colspan="2">
+          <widget class="QSplitter" name="splitter_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QPushButton" name="register_btn_2">
+            <property name="text">
+             <string>Register</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+         <item row="6" column="5">
           <spacer name="horizontalSpacer_10">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -187,25 +191,34 @@
            </property>
           </spacer>
          </item>
+         <item row="0" column="4" rowspan="6" colspan="2">
+          <widget class="QWidget" name="image_2" native="true">
+           <property name="styleSheet">
+            <string notr="true">image: url(:/newPrefix/register.png);</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <spacer name="horizontalSpacer_13">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
-       </widget>
-       <widget class="QSplitter" name="splitter_2">
-        <property name="geometry">
-         <rect>
-          <x>220</x>
-          <y>450</y>
-          <width>170</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <widget class="QPushButton" name="register_btn">
-         <property name="text">
-          <string>Register</string>
-         </property>
-        </widget>
        </widget>
       </widget>
       <widget class="QWidget" name="login">
@@ -215,25 +228,15 @@
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>50</x>
-          <y>40</y>
-          <width>271</width>
-          <height>381</height>
+          <x>220</x>
+          <y>240</y>
+          <width>481</width>
+          <height>189</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="1" column="2">
           <widget class="QLineEdit" name="password_login_input"/>
-         </item>
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Username</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLineEdit" name="username_login_input"/>
          </item>
          <item row="1" column="0" colspan="2">
           <widget class="QLabel" name="label_9">
@@ -242,50 +245,75 @@
            </property>
           </widget>
          </item>
+         <item row="4" column="2">
+          <widget class="QSplitter" name="splitter">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QPushButton" name="login_btn">
+            <property name="text">
+             <string>Login</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLineEdit" name="username_login_input"/>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Username</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="label_directory">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QSplitter" name="splitter_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QPushButton" name="keys_dir_btn">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Select keys directory</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </widget>
+         </item>
         </layout>
        </widget>
-       <widget class="QSplitter" name="splitter">
+       <widget class="QWidget" name="image" native="true">
         <property name="geometry">
          <rect>
-          <x>160</x>
-          <y>450</y>
-          <width>336</width>
-          <height>27</height>
+          <x>300</x>
+          <y>40</y>
+          <width>401</width>
+          <height>181</height>
          </rect>
         </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <widget class="QPushButton" name="login_btn">
-         <property name="text">
-          <string>Login</string>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QPushButton" name="keys_dir_btn">
-        <property name="geometry">
-         <rect>
-          <x>354</x>
-          <y>180</y>
-          <width>381</width>
-          <height>38</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Select keys directory</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_directory">
-        <property name="geometry">
-         <rect>
-          <x>341</x>
-          <y>251</y>
-          <width>481</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
+        <property name="styleSheet">
+         <string notr="true">image: url(:/newPrefix/emblem-secure-messaging.png);</string>
         </property>
        </widget>
       </widget>
@@ -296,56 +324,82 @@
        <widget class="QWidget" name="gridLayoutWidget">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>481</width>
+          <x>50</x>
+          <y>80</y>
+          <width>871</width>
           <height>451</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
-         <item row="1" column="0">
+         <item row="4" column="0">
           <widget class="QLineEdit" name="text_input"/>
          </item>
-         <item row="0" column="0">
+         <item row="4" column="1">
+          <widget class="QSplitter" name="splitter_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QPushButton" name="send_btn">
+            <property name="text">
+             <string>Send</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QCheckBox" name="signCheck">
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>Sign your Message</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="0" rowspan="3">
           <widget class="QTextBrowser" name="text_output"/>
          </item>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Select your correspondant:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="clientsLists"/>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
-       </widget>
-       <widget class="QPushButton" name="send_btn">
-        <property name="geometry">
-         <rect>
-          <x>510</x>
-          <y>430</y>
-          <width>221</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Send</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="signCheck">
-        <property name="geometry">
-         <rect>
-          <x>500</x>
-          <y>380</y>
-          <width>239</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Sign your Message</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="clientsLists">
-        <property name="geometry">
-         <rect>
-          <x>500</x>
-          <y>110</y>
-          <width>239</width>
-          <height>36</height>
-         </rect>
-        </property>
        </widget>
       </widget>
      </widget>
@@ -357,16 +411,10 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>841</width>
-     <height>34</height>
+     <width>977</width>
+     <height>32</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>Fi&amp;le</string>
-    </property>
-   </widget>
-   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionMinimize">
@@ -406,13 +454,12 @@
   <tabstop>username_input</tabstop>
   <tabstop>password_input</tabstop>
   <tabstop>public_key_file_input</tabstop>
-  <tabstop>file_selection_btn</tabstop>
-  <tabstop>key_generation_checkbox</tabstop>
-  <tabstop>register_btn</tabstop>
   <tabstop>username_login_input</tabstop>
   <tabstop>password_login_input</tabstop>
   <tabstop>login_btn</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="GUIFile/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -28,8 +28,8 @@ class ClientThread(threading.Thread):
         except Exception:
             return
         client=Client.loadJson(json)
-        self.client = Server.authentification(client)
-        if (self.client!=None):
+        self.client = Server.authentification(client,self.socket.get_peer_certificate())
+        if (isinstance(self.client,Client)):
             try:
                 self.socket.send("TRUE")
                 self.addClient(self.source,self)
@@ -39,7 +39,7 @@ class ClientThread(threading.Thread):
             except SSL.Error:
                 print ('Connection died unexpectedly')
         else:
-            self.socket.send("Authentification error")
+            self.socket.send(self.client)
 
         self.removeClient(self.source)
 
@@ -124,17 +124,21 @@ class Server:
             print("deconnect: "+key+'/'+o.client.login)
 
     @staticmethod
-    def authentification(client):
+    def authentification(client,certif):
+        certif=certif_to_string(certif)
         cl = Server.ldap_server.findClient(client.login)
         if cl == None:
-            return None
+            return "user does not exist"
         else:
             if hash_SHA512(client.password) == cl.password :
-                return cl
-            return None
+                if(certif==cl.certification):
+                    return cl
+                return "certification incorrect"
+            return "password incorrect"
 
 
 
 server=Server()
 while 1:
     server.listen()
+

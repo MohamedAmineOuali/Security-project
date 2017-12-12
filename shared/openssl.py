@@ -67,15 +67,23 @@ def create_certificate(req, issuerCert, issuerKey, serial, notBefore, notAfter, 
     return cert
 
 
-def load_key_file(keyfile, passphrase=''):
+def load_key_file(keyfile,passphrase=''):
+    if(isinstance(passphrase,str)):
+        passphrase=passphrase.encode()
     st_key = open(keyfile, 'rt').read()
-    key = crypto.load_privatekey(crypto.FILETYPE_PEM, st_key, passphrase=str.encode(passphrase))
+    key = crypto.load_privatekey(crypto.FILETYPE_PEM, st_key, passphrase=passphrase)
     return key
 
 
-def save_key_file(filename, key, passphrase=''):
+def save_key_file(filename, key, passphrase='',cipher='aes256' ):
+    if (isinstance(passphrase, str)):
+        passphrase = passphrase.encode()
+    else:
+        passphrase=passphrase()
+        if(passphrase==b''):
+            cipher=None
     with open(filename, 'wb') as file:
-        file.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, key, passphrase=str.encode(passphrase)))
+        file.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, key,cipher=cipher,passphrase=passphrase))
     return True
 
 
