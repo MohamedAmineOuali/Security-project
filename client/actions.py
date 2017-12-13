@@ -28,7 +28,6 @@ class Action(QObject):
         self.registration_directory = None
         self.gui.clientsLists.addItem("all users")
         self.gui.clientsLists.currentTextChanged.connect(self.userSelect)
-
     def select_key_directory(self):
         self.directory = str(QFileDialog.getExistingDirectory(self.gui.centralwidget, "Select Directory"))
         self.gui.label_directory.setText(self.directory)
@@ -42,7 +41,10 @@ class Action(QObject):
 
     def send(self):
         self.client.send(self.gui.text_input.text())
-        self.gui.text_output.setText(self.gui.text_output.toPlainText()+"me: "+self.gui.text_input.text()+"\n")
+        text=self.gui.text_output.toPlainText()
+        if(text!=""):
+            text=self.gui.text_output.toHtml()
+        self.gui.text_output.setText(text+"<span style=\"color: red\"> me: </span>"+self.gui.text_input.text()+"\n")
         self.gui.text_input.setText("")
 
     def login(self):
@@ -132,8 +134,11 @@ class Action(QObject):
         if(state):
             self.gui.tabWidget.setCurrentIndex(2)
 
-    def display_result(self,text):
-        self.gui.text_output.setText(self.gui.text_output.toPlainText()+text+"\n")
+    def display_result(self,msg):
+        text = self.gui.text_output.toPlainText()
+        if (text != ""):
+            text = self.gui.text_output.toHtml()
+        self.gui.text_output.setText(text+msg+"\n")
 
     def userSelect(self,login):
         self.client.select_destination(login)
@@ -164,3 +169,5 @@ class Action(QObject):
             msg.setDetailedText(detail)
         msg.setWindowTitle(title)
         msg.show()
+
+

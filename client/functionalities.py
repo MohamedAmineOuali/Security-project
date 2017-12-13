@@ -111,15 +111,15 @@ class Clientf:
             msg = m[1]
             for key,cert in self.clients.items():
                 if(verify(cert,signature,msg)):
-                    text+=key+': '
+                    text+='<span style=\"color: yellow\">'+key+'</span>: '
                     break
         if (text == ''):
-            text += 'anonyme: '
+            text += '<span style=\"color: green\"> anonyme: </span>'
 
         if cryptpattern in msg:
             d=decrypt(self.key,msg.split(cryptpattern)[1])
             if(d==None):
-                text+="crypted message"
+                text+="<span style=\"color: red\">  crypted message </span>"
             else:
                 text+=d
         else:
