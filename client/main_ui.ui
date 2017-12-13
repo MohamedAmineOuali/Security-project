@@ -171,7 +171,7 @@ QTabWidget[showHeader='true'] QTabBar::tab:selected{background:#55B023;margin-to
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <widget class="QPushButton" name="register_btn_2">
+           <widget class="QPushButton" name="register_btn">
             <property name="text">
              <string>Register</string>
             </property>
